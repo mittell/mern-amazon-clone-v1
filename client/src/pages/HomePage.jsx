@@ -19,7 +19,6 @@ const reducer = (state, action) => {
 };
 
 const HomePage = () => {
-	// const [products, setProducts] = useState([]);
 	const [{ loading, error, products }, dispatch] = useReducer(reducer, {
 		products: [],
 		loading: true,
@@ -35,7 +34,6 @@ const HomePage = () => {
 			} catch (err) {
 				dispatch({ type: 'FETCH_FAIL', payload: err.message });
 			}
-			// setProducts(result.data);
 		};
 		fetchData();
 	}, []);
