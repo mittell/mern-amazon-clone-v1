@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Product from '../components/Product';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import { getError } from '../utils';
 
 const reducer = (state, action) => {
 	switch (action.type) {
@@ -34,7 +35,7 @@ const HomePage = () => {
 				const result = await axios.get('/api/products');
 				dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
 			} catch (err) {
-				dispatch({ type: 'FETCH_FAIL', payload: err.message });
+				dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
 			}
 		};
 		fetchData();
