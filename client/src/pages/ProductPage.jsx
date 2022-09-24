@@ -9,6 +9,8 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 
 const reducer = (state, action) => {
 	switch (action.type) {
@@ -47,9 +49,9 @@ const ProductPage = () => {
 	}, [slug]);
 
 	return loading ? (
-		<div>Loading...</div>
+		<LoadingBox />
 	) : error ? (
-		<div>{error}</div>
+		<MessageBox variant='danger'>{error}</MessageBox>
 	) : (
 		<Row>
 			<Col md={6}>
