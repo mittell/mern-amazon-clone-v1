@@ -34,7 +34,7 @@ const ProductPage = () => {
 	const navigate = useNavigate();
 
 	const { slug } = params;
-	const { state, dispatch: cxtDispatch } = useContext(Store);
+	const { state, dispatch: ctxDispatch } = useContext(Store);
 	const { cart } = state;
 
 	const [{ loading, error, product }, dispatch] = useReducer(reducer, {
@@ -66,7 +66,7 @@ const ProductPage = () => {
 			return;
 		}
 
-		cxtDispatch({
+		ctxDispatch({
 			type: 'CART_ADD_ITEM',
 			payload: { ...product, quantity },
 		});
