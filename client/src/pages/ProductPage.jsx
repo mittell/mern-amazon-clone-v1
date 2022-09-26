@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useReducer } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
 import { getError } from '../utils';
@@ -31,6 +31,8 @@ const reducer = (state, action) => {
 
 const ProductPage = () => {
 	const params = useParams();
+	const navigate = useNavigate();
+
 	const { slug } = params;
 	const { state, dispatch: cxtDispatch } = useContext(Store);
 	const { cart } = state;
@@ -68,6 +70,8 @@ const ProductPage = () => {
 			type: 'CART_ADD_ITEM',
 			payload: { ...product, quantity },
 		});
+
+		navigate('/cart');
 	};
 
 	return loading ? (
