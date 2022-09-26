@@ -1,17 +1,20 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
-import Rating from '../components/Rating';
+import { getError } from '../utils';
+import { Store } from '../store/store';
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
+
+import Rating from '../components/Rating';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { getError } from '../utils';
 
 const reducer = (state, action) => {
 	switch (action.type) {
@@ -29,6 +32,7 @@ const reducer = (state, action) => {
 const ProductPage = () => {
 	const params = useParams();
 	const { slug } = params;
+	const { state, dispatch: cxtDispatch } = useContext(Store);
 
 	const [{ loading, error, product }, dispatch] = useReducer(reducer, {
 		product: [],
@@ -48,6 +52,13 @@ const ProductPage = () => {
 		};
 		fetchData();
 	}, [slug]);
+
+	const handleAddToCart = () => {
+		cxtDispatch({
+			type: 'CART_ADD_ITEM',
+			payload: { ...product, quantity: 1 },
+		});
+	};
 
 	return loading ? (
 		<LoadingBox />
@@ -101,7 +112,9 @@ const ProductPage = () => {
 							{product.countInStock > 0 && (
 								<ListGroup.Item>
 									<div className='d-grid'>
-										<Button variant='primary'>Add to Cart</Button>
+										<Button variant='primary' onClick={handleAddToCart}>
+											Add to Cart
+										</Button>
 									</div>
 								</ListGroup.Item>
 							)}
