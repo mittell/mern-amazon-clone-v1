@@ -33,6 +33,7 @@ const ProductPage = () => {
 	const params = useParams();
 	const { slug } = params;
 	const { state, dispatch: cxtDispatch } = useContext(Store);
+	const { cart } = state;
 
 	const [{ loading, error, product }, dispatch] = useReducer(reducer, {
 		product: [],
@@ -53,10 +54,19 @@ const ProductPage = () => {
 		fetchData();
 	}, [slug]);
 
-	const handleAddToCart = () => {
+	const handleAddToCart = async () => {
+		const existingItem = cart.cartItems.find((x) => x._id === product._id);
+		const quantity = existingItem ? existingItem.quantity + 1 : 1;
+		const { data } = await axios.get(`/api/products/${product._id}`);
+
+		if (data.countInStock < quantity) {
+			window.alert('Sorry, product is currently unavailable.');
+			return;
+		}
+
 		cxtDispatch({
 			type: 'CART_ADD_ITEM',
-			payload: { ...product, quantity: 1 },
+			payload: { ...product, quantity },
 		});
 	};
 
