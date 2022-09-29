@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import data from './data.js';
 import productRouter from './routes/productRoutes.js';
 import seedRouter from './routes/seedRoutes.js';
 
@@ -21,8 +20,6 @@ const port = process.env.PORT || 5000;
 
 app.use('/api/seed', seedRouter);
 app.use('/api/products', productRouter);
-
-
 
 app.listen(port, () => {
 	console.log(`Server listening on Port: ${port}`);
