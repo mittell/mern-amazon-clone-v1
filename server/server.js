@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import data from './data.js';
+import seedRouter from './routes/seedRoutes.js';
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ mongoose
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+app.use('/api/seed', seedRouter);
 
 app.get('/api/products', (req, res) => {
 	res.send(data.products);
