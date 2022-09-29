@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -19,6 +19,8 @@ const SignInPage = () => {
 
 	const { state, dispatch: ctxDispatch } = useContext(Store);
 
+	const { userInfo } = state;
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -36,6 +38,12 @@ const SignInPage = () => {
 			alert('Invalid login credentials');
 		}
 	};
+
+	useEffect(() => {
+		if (userInfo) {
+			navigate(redirect);
+		}
+	}, [navigate, redirect, userInfo]);
 
 	return (
 		<Container className='small-container'>
