@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Store } from '../store/store';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -34,8 +36,8 @@ const SignInPage = () => {
 			localStorage.setItem('userInfo', JSON.stringify(data));
 
 			navigate(redirect || '/');
-		} catch (err) {
-			alert('Invalid login credentials');
+		} catch (error) {
+			toast.error(getError(error));
 		}
 	};
 
