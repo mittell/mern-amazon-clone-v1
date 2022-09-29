@@ -8,6 +8,9 @@ const initialState = {
 			? JSON.parse(localStorage.getItem('cartItems'))
 			: [],
 	},
+	userInfo: localStorage.getItem('userInfo')
+		? JSON.parse(localStorage.getItem('userInfo'))
+		: null,
 };
 
 const reducer = (state, action) => {
@@ -41,6 +44,10 @@ const reducer = (state, action) => {
 
 		case 'USER_SIGNIN': {
 			return { ...state, userInfo: action.payload };
+		}
+
+		case 'USER_SIGNOUT': {
+			return { ...state, userInfo: null };
 		}
 
 		default: {

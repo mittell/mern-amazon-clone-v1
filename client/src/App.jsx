@@ -8,6 +8,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Badge from 'react-bootstrap/Badge';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
@@ -15,8 +16,13 @@ import CartPage from './pages/CartPage';
 import SignInPage from './pages/SignInPage';
 
 function App() {
-	const { state } = useContext(Store);
-	const { cart } = state;
+	const { state, dispatch: ctxDispatch } = useContext(Store);
+	const { cart, userInfo } = state;
+
+	const handleSignOut = () => {
+		ctxDispatch({ type: 'USER_SIGNOUT' });
+		localStorage.removeItem('userInfo');
+	};
 
 	return (
 		<BrowserRouter>
@@ -36,6 +42,28 @@ function App() {
 										</Badge>
 									)}
 								</Link>
+								{userInfo ? (
+									<NavDropdown title={userInfo.name} id='basic-nav-dropdown'>
+										<LinkContainer to='/profile'>
+											<NavDropdown.Item>User Profile</NavDropdown.Item>
+										</LinkContainer>
+										<LinkContainer to='/orderhistory'>
+											<NavDropdown.Item>Order History</NavDropdown.Item>
+										</LinkContainer>
+										<NavDropdown.Divider />
+										<Link
+											className='dropdown-item'
+											to='#signout'
+											onClick={handleSignOut}
+										>
+											Sign Out
+										</Link>
+									</NavDropdown>
+								) : (
+									<Link className='nav-link' to='/signin'>
+										Sign In
+									</Link>
+								)}
 							</Nav>
 						</Container>
 					</Navbar>
