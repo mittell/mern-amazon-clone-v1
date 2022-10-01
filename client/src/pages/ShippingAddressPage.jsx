@@ -5,6 +5,7 @@ import { Store } from '../store/store';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import CheckoutSteps from '../components/CheckoutSteps';
 
 const ShippingAddressPage = () => {
 	const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -57,6 +58,9 @@ const ShippingAddressPage = () => {
 			<Helmet>
 				<title>Shipping Address</title>
 			</Helmet>
+
+			<CheckoutSteps step1 step2 />
+
 			<div className='container small-container'>
 				<h1 className='my-3'>Shipping Address</h1>
 				<Form onSubmit={handleSubmit}>
