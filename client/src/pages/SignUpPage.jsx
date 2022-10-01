@@ -28,6 +28,11 @@ const SignUpPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
+		if (password !== confirmPassword) {
+			toast.error('Please confirm your password!');
+			return;
+		}
+
 		try {
 			const { data } = await axios.post('/api/users/signup', {
 				name,
@@ -94,7 +99,7 @@ const SignUpPage = () => {
 				</div>
 				<div className='mb-3'>
 					Already have an account?{' '}
-					<Link to={`signin?redirect=${redirect}`}>Sign In</Link>
+					<Link to={`/signin?redirect=${redirect}`}>Sign In</Link>
 				</div>
 			</Form>
 		</Container>
