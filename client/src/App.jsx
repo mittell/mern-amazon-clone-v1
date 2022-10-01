@@ -92,7 +92,9 @@ function App() {
 					</Container>
 				</main>
 				<footer>
-					<div className='text-center'>All Rights Reserved</div>
+					<div className='text-center mb-4 mt-4'>
+						Copyright &copy; 2022 Chris Mittell
+					</div>
 				</footer>
 			</div>
 		</BrowserRouter>
