@@ -70,7 +70,7 @@ const OrderScreen = () => {
 			dispatch({ type: 'CREATE_REQUEST' });
 
 			const { data } = await axios.post(
-				'/api/order',
+				'/api/orders',
 				{
 					orderItems: cart.cartItems,
 					shippingAddress: cart.shippingAddress,
@@ -92,7 +92,7 @@ const OrderScreen = () => {
 
 			localStorage.removeItem('cartItems');
 
-			navigate(`/order/${data.order._id}`);
+			navigate(`/orders/${data.order._id}`);
 		} catch (err) {
 			dispatch({ type: 'CREATE_FAIL' });
 			toast.error(getError(err));
