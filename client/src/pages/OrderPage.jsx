@@ -171,8 +171,12 @@ const OrderPage = () => {
 								</ListGroup.Item>
 								<ListGroup.Item>
 									<Row>
-										<Col>Order Total</Col>
-										<Col>¥{order.totalPrice.toFixed(0)}</Col>
+										<Col>
+											<strong>Order Total</strong>
+										</Col>
+										<Col>
+											<strong>¥{order.totalPrice.toFixed(0)}</strong>
+										</Col>
 									</Row>
 								</ListGroup.Item>
 							</ListGroup>
