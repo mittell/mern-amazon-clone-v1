@@ -17,7 +17,7 @@ const reducer = (state, action) => {
 		}
 
 		case 'FETCH_SUCCESS': {
-			return { ...state, loading: false, order: action.payload, error: '' };
+			return { ...state, loading: false, orders: action.payload, error: '' };
 		}
 
 		case 'FETCH_FAIL': {
@@ -48,6 +48,7 @@ const OrderHistoryPage = () => {
 				const { data } = await axios.get(`/api/orders/mine`, {
 					headers: { authorization: `Bearer ${userInfo.token}` },
 				});
+
 				dispatch({ type: 'FETCH_SUCCESS', payload: data });
 			} catch (err) {
 				dispatch({
