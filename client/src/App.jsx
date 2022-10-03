@@ -88,7 +88,7 @@ function App() {
 							<Route path='/shipping' element={<ShippingAddressPage />} />
 							<Route path='/payment' element={<PaymentMethodPage />} />
 							<Route path='/placeorder' element={<PlaceOrderPage />} />
-							<Route path='/order/:id' element={<OrderPage />} />
+							<Route path='/orders/:id' element={<OrderPage />} />
 							<Route path='/' element={<HomePage />} />
 						</Routes>
 					</Container>
