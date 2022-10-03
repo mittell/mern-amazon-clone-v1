@@ -44,6 +44,11 @@ const ProfilePage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
+		if (password !== confirmPassword) {
+			toast.error('Please confirm your password!');
+			return;
+		}
+
 		try {
 			const { data } = await axios.put(
 				'/api/users/profile',
