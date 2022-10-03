@@ -1,32 +1,30 @@
 import React, { useContext, useEffect, useReducer } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Store } from '../store/store';
-import { toast } from 'react-toastify';
-import { getError } from '../utils';
 import axios from 'axios';
+import { Helmet } from 'react-helmet-async';
+import { getError } from '../utils';
+
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Button from 'react-bootstrap/Button';
-
-import CheckoutSteps from '../components/CheckoutSteps';
-import LoadingBox from '../components/LoadingBox';
 
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'CREATE_REQUEST': {
-			return { ...state, loading: true };
+		case 'FETCH_REQUEST': {
+			return { ...state, loading: true, error: '' };
 		}
 
-		case 'CREATE_SUCCESS': {
-			return { ...state, loading: false };
+		case 'FETCH_SUCCESS': {
+			return { ...state, loading: false, order: action.payload, error: '' };
 		}
 
-		case 'CREATE_FAIL': {
-			return { ...state, loading: false };
+		case 'FETCH_FAIL': {
+			return { ...state, loading: false, error: action.payload };
 		}
 
 		default: {
@@ -35,110 +33,96 @@ const reducer = (state, action) => {
 	}
 };
 
-const OrderScreen = () => {
-	const { state, dispatch: ctxDispatch } = useContext(Store);
-	const { cart, userInfo } = state;
+const OrderPage = () => {
+	const params = useParams();
+
+	const { id: orderId } = params;
 
 	const navigate = useNavigate();
 
-	const [{ loading }, dispatch] = useReducer(reducer, {
-		loading: false,
+	const { state } = useContext(Store);
+	const { userInfo } = state;
+
+	const [{ loading, error, order }, dispatch] = useReducer(reducer, {
+		loading: true,
+		order: {},
+		error: '',
 	});
 
-	const roundToTwoDecimal = (num) =>
-		Math.round(num * 100 + Number.EPSILON) / 100;
-
-	cart.itemsPrice = roundToTwoDecimal(
-		cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
-	);
-
-	cart.shippingPrice =
-		cart.itemsPrice > 100 ? roundToTwoDecimal(0) : roundToTwoDecimal(10);
-
-	cart.taxPrice = roundToTwoDecimal(0.08 * cart.itemsPrice);
-
-	cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
-
 	useEffect(() => {
-		if (!cart.paymentMethod) {
-			navigate('/payment');
+		const fetchOrder = async () => {
+			try {
+				dispatch({ type: 'FETCH_REQUEST' });
+				const { data } = await axios.get(`/api/orders/${orderId}`, {
+					headers: { authorization: `Bearer ${userInfo.token}` },
+				});
+				dispatch({ type: 'FETCH_SUCCESS', payload: data });
+			} catch (err) {
+				dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+			}
+		};
+
+		if (!userInfo) {
+			return navigate('/login');
 		}
-	}, [cart.paymentMethod, navigate]);
 
-	const handlePlaceOrder = async () => {
-		try {
-			dispatch({ type: 'CREATE_REQUEST' });
-
-			const { data } = await axios.post(
-				'/api/orders',
-				{
-					orderItems: cart.cartItems,
-					shippingAddress: cart.shippingAddress,
-					paymentMethod: cart.paymentMethod,
-					itemsPrice: cart.itemsPrice,
-					shippingPrice: cart.shippingPrice,
-					taxPrice: cart.taxPrice,
-					totalPrice: cart.totalPrice,
-				},
-				{
-					headers: {
-						authorization: `Bearer ${userInfo.token}`,
-					},
-				}
-			);
-
-			ctxDispatch({ type: 'CART_CLEAR' });
-			dispatch({ type: 'CREATE_SUCCESS' });
-
-			localStorage.removeItem('cartItems');
-
-			navigate(`/orders/${data.order._id}`);
-		} catch (err) {
-			dispatch({ type: 'CREATE_FAIL' });
-			toast.error(getError(err));
+		if (!order._id || (order._id && order._id !== orderId)) {
+			fetchOrder();
 		}
-	};
+	}, [userInfo, navigate, order._id, orderId]);
 
-	return (
+	return loading ? (
+		<LoadingBox></LoadingBox>
+	) : error ? (
+		<MessageBox variant='danger'>{error}</MessageBox>
+	) : (
 		<div>
-			<CheckoutSteps step1 step2 step3 step4 />
 			<Helmet>
-				<title>Preview Order</title>
+				<title>Order {orderId}</title>
 			</Helmet>
-			<h1 className='my-3'>Preview Order</h1>
+			<h1 className='my-3'>Order {orderId}</h1>
 			<Row>
 				<Col md={8}>
 					<Card className='mb-3'>
-						<Card.Body>
-							<Card.Title>Shipping</Card.Title>
-							<Card.Text>
-								<strong>Name: </strong>
-								{cart.shippingAddress.fullName} <br />
-								<strong>Address: </strong>
-								{cart.shippingAddress.address}, {cart.shippingAddress.city},{' '}
-								{cart.shippingAddress.postalCode},{' '}
-								{cart.shippingAddress.country}
-							</Card.Text>
-							<Link to='/shipping'>Edit</Link>
-						</Card.Body>
+						<Card.Title>Shipping</Card.Title>
+						<Card.Text>
+							<strong>Name: </strong>
+							{order.shippingAddress.fullName}
+							<br />
+							<strong>Address: </strong>
+							{order.shippingAddress.address}, {order.shippingAddress.city},{' '}
+							{order.shippingAddress.postalCode},{' '}
+							{order.shippingAddress.country}
+						</Card.Text>
+						{order.isDelivered ? (
+							<MessageBox variant='success'>
+								Delivered at {order.deliveredAt}
+							</MessageBox>
+						) : (
+							<MessageBox variant='danger'>Not Delivered</MessageBox>
+						)}
 					</Card>
-
 					<Card className='mb-3'>
 						<Card.Body>
 							<Card.Title>Payment</Card.Title>
 							<Card.Text>
 								<strong>Method: </strong>
-								{cart.paymentMethod}
+								{order.paymentMethod}
 							</Card.Text>
-							<Link to='/payment'>Edit</Link>
+							{order.isPaid ? (
+								<MessageBox variant='success'>
+									Paid at {order.paidAt}
+								</MessageBox>
+							) : (
+								<MessageBox variant='danger'>Not Paid</MessageBox>
+							)}
 						</Card.Body>
 					</Card>
-
 					<Card className='mb-3'>
 						<Card.Body>
 							<Card.Title>Items</Card.Title>
 							<ListGroup variant='flush'>
-								{cart.cartItems.map((item) => (
+								{order.orderItems.map((item) => (
 									<ListGroup.Item key={item._id}>
 										<Row className='align-items-center'>
 											<Col md={6}>
@@ -157,51 +141,37 @@ const OrderScreen = () => {
 									</ListGroup.Item>
 								))}
 							</ListGroup>
-							<Link to='/cart'>Edit</Link>
 						</Card.Body>
 					</Card>
 				</Col>
-
 				<Col md={4}>
-					<Card>
+					<Card className='mb-3'>
 						<Card.Body>
 							<Card.Title>Order Summary</Card.Title>
 							<ListGroup variant='flush'>
 								<ListGroup.Item>
 									<Row>
 										<Col>Items</Col>
-										<Col>¥{cart.itemsPrice.toFixed(0)}</Col>
+										<Col>¥{order.itemsPrice.toFixed(0)}</Col>
 									</Row>
 								</ListGroup.Item>
 								<ListGroup.Item>
 									<Row>
 										<Col>Shipping</Col>
-										<Col>¥{cart.shippingPrice.toFixed(0)}</Col>
+										<Col>¥{order.shippingPrice.toFixed(0)}</Col>
 									</Row>
 								</ListGroup.Item>
 								<ListGroup.Item>
 									<Row>
 										<Col>Tax</Col>
-										<Col>¥{cart.taxPrice.toFixed(0)}</Col>
+										<Col>¥{order.taxPrice.toFixed(0)}</Col>
 									</Row>
 								</ListGroup.Item>
 								<ListGroup.Item>
 									<Row>
 										<Col>Order Total</Col>
-										<Col>¥{cart.totalPrice.toFixed(0)}</Col>
+										<Col>¥{order.totalPrice.toFixed(0)}</Col>
 									</Row>
-								</ListGroup.Item>
-								<ListGroup.Item>
-									<div className='d-grid'>
-										<Button
-											type='Button'
-											onClick={handlePlaceOrder}
-											disabled={cart.cartItems.length === 0}
-										>
-											Place Order
-										</Button>
-									</div>
-									{loading && <LoadingBox />}
 								</ListGroup.Item>
 							</ListGroup>
 						</Card.Body>
@@ -212,4 +182,4 @@ const OrderScreen = () => {
 	);
 };
 
-export default OrderScreen;
+export default OrderPage;
