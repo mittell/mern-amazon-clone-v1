@@ -26,6 +26,7 @@ import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderPage from './pages/OrderPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import ProfilePage from './pages/ProfilePage';
+import SearchBox from './components/SearchBox';
 
 function App() {
 	const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -78,6 +79,7 @@ function App() {
 							</LinkContainer>
 							<Navbar.Toggle aria-controls='basic-navbar-nav' />
 							<Navbar.Collapse id='basic-navbar-nav'>
+								<SearchBox />
 								<Nav className='me-auto w-100 justify-content-end'>
 									<Link to='/cart' className='nav-link'>
 										Cart{' '}
