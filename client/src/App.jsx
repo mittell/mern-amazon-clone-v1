@@ -28,6 +28,7 @@ import OrderHistoryPage from './pages/OrderHistoryPage';
 import ProfilePage from './pages/ProfilePage';
 import SearchBox from './components/SearchBox';
 import SearchPage from './pages/SearchPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
 	const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -148,12 +149,33 @@ function App() {
 							<Route path='/search' element={<SearchPage />} />
 							<Route path='/signin' element={<SignInPage />} />
 							<Route path='/signup' element={<SignUpPage />} />
-							<Route path='/profile' element={<ProfilePage />} />
+							<Route
+								path='/profile'
+								element={
+									<ProtectedRoute>
+										<ProfilePage />
+									</ProtectedRoute>
+								}
+							/>
 							<Route path='/shipping' element={<ShippingAddressPage />} />
 							<Route path='/payment' element={<PaymentMethodPage />} />
 							<Route path='/placeorder' element={<PlaceOrderPage />} />
-							<Route path='/orders/:id' element={<OrderPage />} />
-							<Route path='/orderhistory' element={<OrderHistoryPage />} />
+							<Route
+								path='/orders/:id'
+								element={
+									<ProtectedRoute>
+										<OrderPage />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
+								path='/orderhistory'
+								element={
+									<ProtectedRoute>
+										<OrderHistoryPage />
+									</ProtectedRoute>
+								}
+							/>
 							<Route path='/' element={<HomePage />} />
 						</Routes>
 					</Container>
