@@ -8,6 +8,7 @@ import { Helmet } from 'react-helmet-async';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import LinkContainer from 'react-router-bootstrap/LinkContainer';
 
 import Rating from '../components/Rating';
 import LoadingBox from '../components/LoadingBox';
@@ -112,6 +113,7 @@ const SearchPage = () => {
 				});
 			}
 		};
+		fetchData();
 	}, [category, order, page, price, query, rating]);
 
 	const [categories, setCategories] = useState([]);
@@ -269,6 +271,22 @@ const SearchPage = () => {
 									</Col>
 								))}
 							</Row>
+
+							<div>
+								{[...Array(pages).keys()].map((x) => (
+									<LinkContainer
+										key={x + 1}
+										className='mx-1'
+										to={getFilterUrl({ page: x + 1 })}
+									>
+										<Button
+											className={Number(page) === x + 1 ? 'text-bold' : ''}
+										>
+											{x + 1}
+										</Button>
+									</LinkContainer>
+								))}
+							</div>
 						</>
 					)}
 				</Col>
