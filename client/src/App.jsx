@@ -1,16 +1,19 @@
 import './App.css';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Store } from './store/store';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getError } from './utils';
+import axios from 'axios';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Badge from 'react-bootstrap/Badge';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Button from 'react-bootstrap/Button';
 
 import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
@@ -27,6 +30,21 @@ import ProfilePage from './pages/ProfilePage';
 function App() {
 	const { state, dispatch: ctxDispatch } = useContext(Store);
 	const { cart, userInfo } = state;
+	const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+	const [categories, setCategories] = useState([]);
+
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				const { data } = await axios.get(`/api/products/categories`);
+				setCategories(data);
+			} catch (err) {
+				toast.error(getError(err));
+			}
+		};
+
+		fetchCategories();
+	}, []);
 
 	const handleSignOut = () => {
 		ctxDispatch({ type: 'USER_SIGNOUT' });
@@ -38,11 +56,23 @@ function App() {
 
 	return (
 		<BrowserRouter>
-			<div className='d-flex flex-column site-container'>
+			<div
+				className={
+					sidebarIsOpen
+						? 'd-flex flex-column site-container active-cont'
+						: 'd-flex flex-column site-container'
+				}
+			>
 				<ToastContainer position='bottom-center' limit={1} />{' '}
 				<header>
 					<Navbar bg='dark' variant='dark' expand='lg'>
 						<Container>
+							<Button
+								variant='dark'
+								onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
+							>
+								<i className='fas fa-bars'></i>
+							</Button>
 							<LinkContainer to='/'>
 								<Navbar.Brand>amazon</Navbar.Brand>
 							</LinkContainer>
@@ -84,6 +114,29 @@ function App() {
 						</Container>
 					</Navbar>
 				</header>
+				<div
+					className={
+						sidebarIsOpen
+							? 'active-nav side-navbar d-flex justify-content-between flex-wrap flex-column'
+							: 'side-navbar d-flex justify-content-between flex-wrap flex-column'
+					}
+				>
+					<Nav className='flex-column text-white w-100 p-2'>
+						<Nav.Item>
+							<strong>Categories</strong>
+							{categories.map((category) => (
+								<Nav.Item key={category}>
+									<LinkContainer
+										to={`/search?category=${category}`}
+										onClick={() => setSidebarIsOpen(false)}
+									>
+										<Nav.Link>{category}</Nav.Link>
+									</LinkContainer>
+								</Nav.Item>
+							))}
+						</Nav.Item>
+					</Nav>
+				</div>
 				<main>
 					<Container className='mt-3'>
 						<Routes>
