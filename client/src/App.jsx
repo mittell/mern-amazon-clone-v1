@@ -79,7 +79,7 @@ function App() {
 								<i className='fas fa-bars'></i>
 							</Button>
 							<LinkContainer to='/'>
-								<Navbar.Brand>amazon</Navbar.Brand>
+								<Navbar.Brand>shoppa</Navbar.Brand>
 							</LinkContainer>
 							<Navbar.Toggle aria-controls='basic-navbar-nav' />
 							<Navbar.Collapse id='basic-navbar-nav'>

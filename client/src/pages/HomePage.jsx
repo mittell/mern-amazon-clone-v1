@@ -44,7 +44,7 @@ const HomePage = () => {
 	return (
 		<>
 			<Helmet>
-				<title>Amazon</title>
+				<title>Shoppa</title>
 			</Helmet>
 			<h1>Featured Products</h1>
 			<div className='products'>
