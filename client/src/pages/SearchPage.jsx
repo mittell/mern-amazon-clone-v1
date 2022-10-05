@@ -102,7 +102,7 @@ const SearchPage = () => {
 		const fetchData = async () => {
 			try {
 				const { data } = await axios.get(
-					`/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}`
+					`${process.env.REACT_APP_API_URL}/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}`
 				);
 
 				dispatch({ type: 'FETCH_SUCCESS', payload: data });
@@ -121,7 +121,7 @@ const SearchPage = () => {
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
-				const { data } = await axios.get(`/api/products/categories`);
+				const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/products/categories`);
 				setCategories(data);
 			} catch (err) {
 				toast.error(getError(err));

@@ -20,7 +20,7 @@ const CartPage = () => {
 	const navigate = useNavigate();
 
 	const handleCartUpdate = async (item, quantity) => {
-		const { data } = await axios.get(`/api/products/${item._id}`);
+		const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/products/${item._id}`);
 
 		if (data.countInStock < quantity) {
 			window.alert('Sorry, product is currently unavailable.');

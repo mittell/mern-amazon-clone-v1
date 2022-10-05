@@ -47,7 +47,7 @@ const ProductPage = () => {
 		const fetchData = async () => {
 			dispatch({ type: 'FETCH_REQUEST' });
 			try {
-				const result = await axios.get(`/api/products/slug/${slug}`);
+				const result = await axios.get(`${process.env.REACT_APP_API_URL}/api/products/slug/${slug}`);
 				dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
 			} catch (err) {
 				dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
@@ -59,7 +59,7 @@ const ProductPage = () => {
 	const handleAddToCart = async () => {
 		const existingItem = cart.cartItems.find((x) => x._id === product._id);
 		const quantity = existingItem ? existingItem.quantity + 1 : 1;
-		const { data } = await axios.get(`/api/products/${product._id}`);
+		const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/products/${product._id}`);
 
 		if (data.countInStock < quantity) {
 			window.alert('Sorry, product is currently unavailable.');

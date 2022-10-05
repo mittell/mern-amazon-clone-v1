@@ -92,7 +92,7 @@ const OrderPage = () => {
 				dispatch({ type: 'PAY_REQUEST' });
 
 				const { data } = await axios.put(
-					`/api/orders/${order._id}/pay`,
+					`${process.env.REACT_APP_API_URL}/api/orders/${order._id}/pay`,
 					details,
 					{ headers: { authorization: `Bearer ${userInfo.token}` } }
 				);
@@ -114,7 +114,7 @@ const OrderPage = () => {
 		const fetchOrder = async () => {
 			try {
 				dispatch({ type: 'FETCH_REQUEST' });
-				const { data } = await axios.get(`/api/orders/${orderId}`, {
+				const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/${orderId}`, {
 					headers: { authorization: `Bearer ${userInfo.token}` },
 				});
 				dispatch({ type: 'FETCH_SUCCESS', payload: data });
@@ -134,7 +134,7 @@ const OrderPage = () => {
 			}
 		} else {
 			const loadPayPalScript = async () => {
-				const { data: clientId } = await axios.get('/api/keys/paypal', {
+				const { data: clientId } = await axios.get(`${process.env.REACT_APP_API_URL}/api/keys/paypal`, {
 					headers: { authorization: `Bearer ${userInfo.token}` },
 				});
 

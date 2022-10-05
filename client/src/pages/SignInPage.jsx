@@ -27,7 +27,7 @@ const SignInPage = () => {
 		e.preventDefault();
 
 		try {
-			const { data } = await axios.post('/api/users/signin', {
+			const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/signin`, {
 				email,
 				password,
 			});
