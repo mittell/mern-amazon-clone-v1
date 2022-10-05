@@ -37,6 +37,7 @@ const ProfilePage = () => {
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 
+	// eslint-disable-next-line no-unused-vars
 	const [{ loadingUpdate }, dispatch] = useReducer(reducer, {
 		loadingUpdate: false,
 	});
