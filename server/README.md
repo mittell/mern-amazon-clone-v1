@@ -1,4 +1,4 @@
-# Amazon Clone c1 - Client
+# Amazon Clone v1 - Server
 
 An Amazon clone, built with React, Node, Express and MongoDB.
 
@@ -12,17 +12,12 @@ Make use Node.js is installed, and npm is up to date:
 
     npm@latest -g
 
-Run the provided setup script:
+Install the required Node Packages:
 
-    npm run setup
+    npm install
 
-Run and debug the application with the dev script:
+Run and debug the application with the start script:
 
-    npm run dev
-
-Build and run the compiled version with the build and start scripts:
-
-    npm run build
     npm run start
 
 ## Contact
